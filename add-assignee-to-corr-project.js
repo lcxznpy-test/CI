@@ -58,7 +58,7 @@ async function run() {
 
     if (projectsToAssociate.length === 0) {
       console.log("没有team，放到默认project下");
-      projectsToAssociate.push(13); 
+      projectsToAssociate.push(3); 
     }
     // 去重，获取的projectid可能有重复，因为一个assignee可以在多个的team下，
     const result = Array.from(new Set(projectsToAssociate))
