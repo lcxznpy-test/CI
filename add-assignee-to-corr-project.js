@@ -22,10 +22,9 @@ async function run() {
     console.log(owner_repo);
     console.log(parts[0]);
     console.log(parts[1]);
-    return ;
     const issue = await octokit.rest.issues.get({
-      owner: process.env.GITHUB_REPOSITORY_OWNER,
-      repo: "2219",         
+      owner: parts[0],
+      repo: parts[1],         
       issue_number: issueNumber,
     });
     // 获取assignees列表
