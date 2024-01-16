@@ -17,6 +17,7 @@ async function run() {
     const issueNumber = process.env.Issue_ID;
     // 获取 issue 的详细信息
     const owner_repo = process.env.GITHUB_REPOSITORY_OWNER_REPO;
+    console.log(owner_repo);
     const parts = owner_repo.split('/');
     console.log(owner_repo);
     console.log(parts[0]);
