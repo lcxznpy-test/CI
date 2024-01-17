@@ -31,6 +31,43 @@ async function run() {
     const assignees = issue.data.assignees;
     // 获取issue的node_id
     const issue_node_id = issue.data.node_id;
+    const headers = {
+        'Authorization': art,
+        'Content-Type': 'application/json',
+      };
+    var query = `
+        query {
+          repository(owner: "${organizationLogin}", name: "${parts[1]}") {
+            issue(number: ${issueNumber}) {
+              projectItems(first:10,includeArchived:false){
+                nodes{
+                  ... on ProjectV2Item{
+                    id
+                    project{
+                      id
+                      title
+                    }
+                  }
+                }
+              }
+          }
+        }
+        }
+      `;
+    var options = {
+          method: 'POST',
+          headers: headers,
+          body: JSON.stringify({ query }),
+        };
+    const resp_add = await fetch(githubApiEndpoint, options);
+    const resp_add_json = await resp_add.json();
+    
+    
+
+
+
+
+    return ;
     if (assignees.length === 0) {
       console.log("Issue 没有 assignee，不进行项目关联");
       return;
@@ -71,10 +108,10 @@ async function run() {
     console.log(result)
 
     // graphql  的header
-    const headers = {
-        'Authorization': art,
-        'Content-Type': 'application/json',
-      };
+    // const headers = {
+    //     'Authorization': art,
+    //     'Content-Type': 'application/json',
+    //   };
     console.log("删除差集中的item");
     const allproject = [1,2,3];
     let diff = allproject.concat(result).filter(v => !allproject.includes(v) || !result.includes(v));
