@@ -138,49 +138,53 @@ async function run() {
     let diff_del = issue_item_id.concat(union_list).filter(v => !issue_item_id.includes(v) || !union_list.includes(v));
     let diff_add = projectID_list.concat(union_list).filter(v => !projectID_list.includes(v) || !union_list.includes(v));
     console.log("删除差集中的item");
-    console.log(diff);
-    for(const pid of diff_del){
-      const del_item_id = m1.get(pid);
-      var query=`
-          mutation{
-            deleteProjectV2Item(input:{projectId: \"${pid}\" itemId: \"${del_item_id}\" }){
-                deletedItemId  
-                }
-          }
-        `;
-      var options = {
-          method: 'POST',
-          headers: headers,
-          body: JSON.stringify({ query }),
-        };
-      // 把不相关的project中删除issue
-      await fetch(githubApiEndpoint, options);
-      console.log("success delete item");
+    console.log(diff_del);
+    if(diff_del.length !== 0){
+        for(const pid of diff_del){
+        const del_item_id = m1.get(pid);
+        var query=`
+            mutation{
+              deleteProjectV2Item(input:{projectId: \"${pid}\" itemId: \"${del_item_id}\" }){
+                  deletedItemId  
+                  }
+            }
+          `;
+        var options = {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify({ query }),
+          };
+        // 把不相关的project中删除issue
+        await fetch(githubApiEndpoint, options);
+        console.log("success delete item");
+      }
     }
     console.log("插入item");
-    for (const pid of diff_add) {
-      // 通过graphql向project插入issue的query
-      var query=`
-          mutation{
-            addProjectV2ItemById(input:{projectId: \"${pid}\" contentId: \"${issue_node_id}\" }){
-                item  {
-                   id   
+    if(diff_add.length !== 0){
+        for (const pid of diff_add) {
+        // 通过graphql向project插入issue的query
+        var query=`
+            mutation{
+              addProjectV2ItemById(input:{projectId: \"${pid}\" contentId: \"${issue_node_id}\" }){
+                  item  {
+                     id   
+                    }
                   }
-                }
-          }
-        `;
-      var options = {
-          method: 'POST',
-          headers: headers,
-          body: JSON.stringify({ query }),
-        };
-      // 向project中插入issue
-      const resp_add = await fetch(githubApiEndpoint, options);
-      const resp_add_json = await resp_add.json();
-      let add_item_id = resp_add_json.data.addProjectV2ItemById.item.id;
-      console.log("issue_node_id=",issue_node_id);
-      console.log("item_id=",add_item_id);
-      console.log("success");
+            }
+          `;
+        var options = {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify({ query }),
+          };
+        // 向project中插入issue
+        const resp_add = await fetch(githubApiEndpoint, options);
+        const resp_add_json = await resp_add.json();
+        let add_item_id = resp_add_json.data.addProjectV2ItemById.item.id;
+        console.log("issue_node_id=",issue_node_id);
+        console.log("item_id=",add_item_id);
+        console.log("success");
+      }
     }
   } catch (error) {
     console.log(error.message)
