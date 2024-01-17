@@ -110,7 +110,7 @@ async function run() {
     const result = Array.from(new Set(projectsToAssociate))
     console.log(result)
     const projectID_list = [];
-    for(const projectID of result){
+    for(const projectId of result){
       var query = `
         query {
           organization(login: "${organizationLogin}") {
