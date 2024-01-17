@@ -159,7 +159,7 @@ async function run() {
         };
       // 向project中插入issue
       const resp_add = await fetch(githubApiEndpoint, options);
-      const resp_add_json = await resp_add_json.json();
+      const resp_add_json = await resp_add.json();
       let item_id = resp_add_json.data.addProjectV2ItemById.item.id;
       console.log("issue_node_id=",issue_node_id);
       console.log("item_id=",item_id);
