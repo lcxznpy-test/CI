@@ -73,6 +73,7 @@ async function run() {
     const projectMapping = {
       'c1': 1,
       'c2': 2,
+      'c4': 4,
     };
     const issue_item_id = [];
     for(const iss of issue_list){
