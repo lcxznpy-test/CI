@@ -75,6 +75,48 @@ async function run() {
         'Authorization': art,
         'Content-Type': 'application/json',
       };
+    // 删除当前issue的所在project的所有item
+    const allproject = [1,2,3];
+    for(const apid of allproject){
+      var query = `
+        query {
+          organization(login: "${organizationLogin}") {
+            projectV2(number: ${apid}) {
+              id
+            }
+          }
+        }
+      `;
+      var options = {
+          method: 'POST',
+          headers: headers,
+          body: JSON.stringify({ query }),
+        };
+      let pid;   // 存node-id
+      // 获取node-id的请求
+      const resp = await fetch(githubApiEndpoint, options);
+      const resp_json = await resp.json();
+      pid = resp_json.data.organization.projectV2.id;
+      console.log('Project ID:', pid);
+      
+      var query=`
+          mutation{
+            deleteProjectV2Item(input:{projectId: \"${pid}\" itemId: \"${issue_node_id}\" }){
+                deletedItemId  
+                }
+          }
+        `;
+      var options = {
+          method: 'POST',
+          headers: headers,
+          body: JSON.stringify({ query }),
+        };
+      // 向project中删除issue
+      await fetch(githubApiEndpoint, options);
+      console.log("success");
+    }
+
+    
     //根据projectid获取对应的node-id，然后插入issue
     for (const projectId of result) {
     // 通过graphql获取node-id的query
