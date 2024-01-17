@@ -76,45 +76,47 @@ async function run() {
         'Content-Type': 'application/json',
       };
     // 删除当前issue的所在project的所有item
-    const allproject = [1,2,3];
-    for(const apid of allproject){
-      var query = `
-        query {
-          organization(login: "${organizationLogin}") {
-            projectV2(number: ${apid}) {
-              id
-            }
-          }
-        }
-      `;
-      var options = {
-          method: 'POST',
-          headers: headers,
-          body: JSON.stringify({ query }),
-        };
-      let pid;   // 存node-id
-      // 获取node-id的请求
-      const resp = await fetch(githubApiEndpoint, options);
-      const resp_json = await resp.json();
-      pid = resp_json.data.organization.projectV2.id;
-      console.log('Project ID:', pid);
+    // const allproject = [1,2,3];
+    // let diff = allproject.concat(result).filter(v => !allproject.includes(v) || !result.includes(v));
+    // console.log(diff);
+    // for(const apid of diff){
+    //   var query = `
+    //     query {
+    //       organization(login: "${organizationLogin}") {
+    //         projectV2(number: ${apid}) {
+    //           id
+    //         }
+    //       }
+    //     }
+    //   `;
+    //   var options = {
+    //       method: 'POST',
+    //       headers: headers,
+    //       body: JSON.stringify({ query }),
+    //     };
+    //   let pid;   // 存node-id
+    //   // 获取node-id的请求
+    //   const resp = await fetch(githubApiEndpoint, options);
+    //   const resp_json = await resp.json();
+    //   pid = resp_json.data.organization.projectV2.id;
+    //   console.log('Project ID:', pid);
       
-      var query=`
-          mutation{
-            deleteProjectV2Item(input:{projectId: \"${pid}\" itemId: \"${issue_node_id}\" }){
-                deletedItemId  
-                }
-          }
-        `;
-      var options = {
-          method: 'POST',
-          headers: headers,
-          body: JSON.stringify({ query }),
-        };
-      // 向project中删除issue
-      await fetch(githubApiEndpoint, options);
-      console.log("success");
-    }
+    //   var query=`
+    //       mutation{
+    //         deleteProjectV2Item(input:{projectId: \"${pid}\" itemId: \"${issue_node_id}\" }){
+    //             deletedItemId  
+    //             }
+    //       }
+    //     `;
+    //   var options = {
+    //       method: 'POST',
+    //       headers: headers,
+    //       body: JSON.stringify({ query }),
+    //     };
+    //   // 把不相关的project中删除issue
+    //   await fetch(githubApiEndpoint, options);
+    //   console.log("success");
+    // }
 
     
     //根据projectid获取对应的node-id，然后插入issue
@@ -156,7 +158,11 @@ async function run() {
           body: JSON.stringify({ query }),
         };
       // 向project中插入issue
-      await fetch(githubApiEndpoint, options);
+      const resp_add = await fetch(githubApiEndpoint, options);
+      const resp_add_json = await resp_add_json.json();
+      let item_id = resp_add_json.data.addProjectV2ItemById.item.id;
+      console.log("issue_node_id=",issue_node_id);
+      console.log("item_id=",item_id);
       console.log("success");
     }
   } catch (error) {
