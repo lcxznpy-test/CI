@@ -54,6 +54,7 @@ async function run() {
         }
         }
       `;
+    console.log(query);
     var options = {
           method: 'POST',
           headers: headers,
