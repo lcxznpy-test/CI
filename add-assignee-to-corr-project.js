@@ -133,7 +133,7 @@ async function run() {
       projectID_list.push(pid);
       console.log(pid);
     }
-    let union_list = projectID_list.concat(issue_item_id.filter(v => !projectID_list.includes(v)))
+    let union_list = projectID_list.filter(v => issue_item_id.includes(v));
     console.log(union_list);
     let diff_del = issue_item_id.concat(union_list).filter(v => !issue_item_id.includes(v) || !union_list.includes(v));
     let diff_add = projectID_list.concat(union_list).filter(v => !projectID_list.includes(v) || !union_list.includes(v));
