@@ -64,6 +64,7 @@ async function run() {
     const resp_add_json = await resp_add.json();
     console.log(resp_add_json);
     console.log(resp_add_json.data.repository.issue);
+    console.log(resp_add_json.data.repository.issue.projectItems.nodes);
     console.log(resp_add_json.data.repository.issue.projectItems.nodes.ProjectV2Item.id);
     
 
