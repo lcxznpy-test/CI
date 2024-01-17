@@ -31,10 +31,12 @@ async function run() {
     const assignees = issue.data.assignees;
     // 获取issue的node_id
     const issue_node_id = issue.data.node_id;
+    // graphql header
     const headers = {
         'Authorization': art,
         'Content-Type': 'application/json',
       };
+    // 获取当前issue所在project的信息
     var query = `
         query {
           repository(owner:"${organizationLogin}", name:"${parts[1]}") {
@@ -54,7 +56,6 @@ async function run() {
         }
         }
       `;
-    console.log(query);
     var options = {
           method: 'POST',
           headers: headers,
@@ -62,16 +63,9 @@ async function run() {
         };
     const resp_add = await fetch(githubApiEndpoint, options);
     const resp_add_json = await resp_add.json();
-    console.log(resp_add_json);
-    console.log(resp_add_json.data.repository.issue);
-    console.log(resp_add_json.data.repository.issue.projectItems.nodes);
-    console.log(resp_add_json.data.repository.issue.projectItems.nodes.ProjectV2Item.id);
-    
-
-
-
-
-    return ;
+    // 关键信息的list
+    const issue_list = resp_add_json.data.repository.issue.projectItems.nodes;
+    const m1 = new Map();
     if (assignees.length === 0) {
       console.log("Issue 没有 assignee，不进行项目关联");
       return;
@@ -80,7 +74,12 @@ async function run() {
       'c1': 1,
       'c2': 2,
     };
-
+    const issue_item_id = [];
+    for(const iss of issue_list){
+      issue_item_id.push(iss.project.id);
+      m1.set(iss.project.id,iss.id);
+    }
+    console.log(m1);
     const projectsToAssociate = [];
     // 获取org下的team列表
     const teams = await octokit.rest.teams.list({
@@ -102,7 +101,7 @@ async function run() {
         }
       }
     }
-
+    
     if (projectsToAssociate.length === 0) {
       console.log("没有team，放到默认project下");
       projectsToAssociate.push(3); 
@@ -110,19 +109,9 @@ async function run() {
     // 去重，获取的projectid可能有重复，因为一个assignee可以在多个的team下，
     const result = Array.from(new Set(projectsToAssociate))
     console.log(result)
-
-    // graphql  的header
-    // const headers = {
-    //     'Authorization': art,
-    //     'Content-Type': 'application/json',
-    //   };
-    console.log("删除差集中的item");
-    const allproject = [1,2,3];
-    let diff = allproject.concat(result).filter(v => !allproject.includes(v) || !result.includes(v));
-    console.log(diff);
-    for(const projectId of diff){
-      // 通过graphql获取node-id的query
-    var query = `
+    const projectID_list = [];
+    for(const projectID of result){
+      var query = `
         query {
           organization(login: "${organizationLogin}") {
             projectV2(number: ${projectId}) {
@@ -141,31 +130,20 @@ async function run() {
       const resp = await fetch(githubApiEndpoint, options);
       const resp_json = await resp.json();
       pid = resp_json.data.organization.projectV2.id;
-      console.log('Project ID:', pid);
-      // 通过graphql向project插入issue的query
+      projectID_list.push(pid);
+      console.log(pid);
+    }
+    let union_list = projectID_list.concat(issue_item_id.filter(v => !projectID_list.includes(v)))
+    console.log(union_list);
+    let diff_del = issue_item_id.concat(union_list).filter(v => !issue_item_id.includes(v) || !union_list.includes(v));
+    let diff_add = projectID_list.concat(union_list).filter(v => !projectID_list.includes(v) || !union_list.includes(v));
+    console.log("删除差集中的item");
+    console.log(diff);
+    for(const pid of diff_del){
+      const del_item_id = m1.get(pid);
       var query=`
           mutation{
-            addProjectV2ItemById(input:{projectId: \"${pid}\" contentId: \"${issue_node_id}\" }){
-                item  {
-                   id   
-                  }
-                }
-          }
-        `;
-      var options = {
-          method: 'POST',
-          headers: headers,
-          body: JSON.stringify({ query }),
-        };
-      // 向project中插入issue
-      const resp_add = await fetch(githubApiEndpoint, options);
-      const resp_add_json = await resp_add.json();
-      let item_id = resp_add_json.data.addProjectV2ItemById.item.id;
-      console.log("success add item id=",item_id);
-      
-      var query=`
-          mutation{
-            deleteProjectV2Item(input:{projectId: \"${pid}\" itemId: \"${item_id}\" }){
+            deleteProjectV2Item(input:{projectId: \"${pid}\" itemId: \"${del_item_id}\" }){
                 deletedItemId  
                 }
           }
@@ -179,32 +157,8 @@ async function run() {
       await fetch(githubApiEndpoint, options);
       console.log("success delete item");
     }
-    // 往交集的project插入item
-    console.log("往交集的project插入item");
-    let intersection = allproject.filter(v => result.includes(v))
-    //根据projectid获取对应的node-id，然后插入issue
-    for (const projectId of intersection) {
-    // 通过graphql获取node-id的query
-    var query = `
-        query {
-          organization(login: "${organizationLogin}") {
-            projectV2(number: ${projectId}) {
-              id
-            }
-          }
-        }
-      `;
-      var options = {
-          method: 'POST',
-          headers: headers,
-          body: JSON.stringify({ query }),
-        };
-      let pid;   // 存node-id
-      // 获取node-id的请求
-      const resp = await fetch(githubApiEndpoint, options);
-      const resp_json = await resp.json();
-      pid = resp_json.data.organization.projectV2.id;
-      console.log('Project ID:', pid);
+    console.log("插入item");
+    for (const pid of diff_add) {
       // 通过graphql向project插入issue的query
       var query=`
           mutation{
@@ -223,9 +177,9 @@ async function run() {
       // 向project中插入issue
       const resp_add = await fetch(githubApiEndpoint, options);
       const resp_add_json = await resp_add.json();
-      let item_id = resp_add_json.data.addProjectV2ItemById.item.id;
+      let add_item_id = resp_add_json.data.addProjectV2ItemById.item.id;
       console.log("issue_node_id=",issue_node_id);
-      console.log("item_id=",item_id);
+      console.log("item_id=",add_item_id);
       console.log("success");
     }
   } catch (error) {
