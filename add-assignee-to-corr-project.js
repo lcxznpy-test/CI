@@ -61,7 +61,7 @@ async function run() {
         };
     const resp_add = await fetch(githubApiEndpoint, options);
     const resp_add_json = await resp_add.json();
-    
+    console.log(resp_add_json);
     
 
 
