@@ -79,7 +79,7 @@ async function run() {
     const allproject = [1,2,3];
     let diff = allproject.concat(result).filter(v => !allproject.includes(v) || !result.includes(v));
     console.log(diff);
-    for(const apid of diff){
+    for(const projectId of diff){
       // 通过graphql获取node-id的query
     var query = `
         query {
