@@ -114,7 +114,7 @@ async function run() {
     if(result.includes(4)){
       console.log("包含4，flag设置为false");
       flag = false;
-      result.filter(item => item !== 4);
+      result = result.filter(item => item !== 4);
     }
     console.log("flag=",flag);
     const projectID_list = [];
