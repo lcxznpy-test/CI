@@ -102,10 +102,13 @@ async function run() {
         }
       }
     }
+
+    result = Array.from(new Set(projectsToAssociate));
+    console.log(result);
     
-    if (projectsToAssociate.length === 0 || (projectsToAssociate.length === 1 && projectsToAssociate.includes(4))) {
+    if (result.length === 0 || (result.length === 1 && result.includes(4))) {
       console.log("没有team，放到默认project下");
-      projectsToAssociate.push(3); 
+      result.push(3); 
     }
     // 去重，获取的projectid可能有重复，因为一个assignee可以在多个的team下，
     result = Array.from(new Set(projectsToAssociate));
