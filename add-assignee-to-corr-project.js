@@ -168,8 +168,8 @@ async function run() {
       }
     }
     console.log("插入item");
-    console.log(diff_add.length === 1 && flag);
-    if(diff_add.length === 1 && flag) {
+    console.log(diff_add.length.includes(4) && flag);
+    if(diff_add.includes(4) && flag && diff_add.length === 1) {
       console.log("只有4,不需要添加");
       return ;
     }
