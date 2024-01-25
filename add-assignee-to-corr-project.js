@@ -170,10 +170,6 @@ async function run() {
     }
     console.log("插入item");
     console.log(diff_add.length !== 0 && flag);
-    if(diff_add.length === 0 && flag) {
-      console.log("只有4,不需要添加");
-      return ;
-    }
     if(diff_add.length !== 0){
         for (const pid of diff_add) {
         // 通过graphql向project插入issue的query
