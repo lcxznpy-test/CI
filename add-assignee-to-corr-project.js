@@ -114,6 +114,7 @@ async function run() {
     if(result.includes(4)){
       console.log("包含4，flag设置为false");
       flag = false;
+      result.filter(item => item !== 4);
     }
     console.log("flag=",flag);
     const projectID_list = [];
@@ -168,8 +169,8 @@ async function run() {
       }
     }
     console.log("插入item");
-    console.log(diff_add.length.includes(4) && flag);
-    if(diff_add.includes(4) && flag && diff_add.length === 1) {
+    console.log(diff_add.length !== 0 && flag);
+    if(diff_add.length === 0 && flag) {
       console.log("只有4,不需要添加");
       return ;
     }
