@@ -103,7 +103,7 @@ async function run() {
       }
     }
     
-    if (projectsToAssociate.length === 0) {
+    if (projectsToAssociate.length === 0 || (projectsToAssociate.length === 1 && projectsToAssociate.includes(4))) {
       console.log("没有team，放到默认project下");
       projectsToAssociate.push(3); 
     }
