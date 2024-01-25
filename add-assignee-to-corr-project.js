@@ -108,8 +108,8 @@ async function run() {
       projectsToAssociate.push(3); 
     }
     // 去重，获取的projectid可能有重复，因为一个assignee可以在多个的team下，
-    const result = Array.from(new Set(projectsToAssociate))
-    console.log(result)
+    result = Array.from(new Set(projectsToAssociate));
+    console.log(result);
     flag = true;
     if(result.includes(4)){
       console.log("包含4，flag设置为false");
