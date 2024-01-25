@@ -112,8 +112,10 @@ async function run() {
     console.log(result)
     flag = true;
     if(result.includes(4)){
+      console.log("包含4，flag设置为false");
       flag = false;
     }
+    console.log("flag=",flag);
     const projectID_list = [];
     for(const projectId of result){
       var query = `
