@@ -111,8 +111,6 @@ async function run() {
       result.push(3); 
     }
     // 去重，获取的projectid可能有重复，因为一个assignee可以在多个的team下，
-    result = Array.from(new Set(projectsToAssociate));
-    console.log(result);
     flag = true;
     if(result.includes(4)){
       console.log("包含4，flag设置为false");
@@ -149,7 +147,7 @@ async function run() {
     let diff_del = issue_item_id.concat(union_list).filter(v => !issue_item_id.includes(v) || !union_list.includes(v));
     let diff_add = projectID_list.concat(union_list).filter(v => !projectID_list.includes(v) || !union_list.includes(v));
     console.log("删除差集中的item");
-    console.log(diff_del);
+    console.log("diff_del",diff_del);
     console.log(diff_del.length !== 0 && flag);
     if(diff_del.length !== 0 && flag){
         for(const pid of diff_del){
@@ -172,6 +170,7 @@ async function run() {
       }
     }
     console.log("插入item");
+    console.log("diff_add",diff_add);
     console.log(diff_add.length !== 0 && flag);
     if(diff_add.length !== 0){
         for (const pid of diff_add) {
