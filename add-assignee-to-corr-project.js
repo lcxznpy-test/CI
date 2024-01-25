@@ -110,6 +110,10 @@ async function run() {
     // 去重，获取的projectid可能有重复，因为一个assignee可以在多个的team下，
     const result = Array.from(new Set(projectsToAssociate))
     console.log(result)
+    flag = true;
+    if(result.includes(4)){
+      flag = false;
+    }
     const projectID_list = [];
     for(const projectId of result){
       var query = `
@@ -140,7 +144,7 @@ async function run() {
     let diff_add = projectID_list.concat(union_list).filter(v => !projectID_list.includes(v) || !union_list.includes(v));
     console.log("删除差集中的item");
     console.log(diff_del);
-    if(diff_del.length !== 0){
+    if(diff_del.length !== 0 && flag){
         for(const pid of diff_del){
         const del_item_id = m1.get(pid);
         var query=`
@@ -161,6 +165,10 @@ async function run() {
       }
     }
     console.log("插入item");
+    if(diff_add.length === 1 && flag) {
+      console.log("只有4,不需要添加");
+      return ;
+    }
     if(diff_add.length !== 0){
         for (const pid of diff_add) {
         // 通过graphql向project插入issue的query
