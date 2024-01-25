@@ -146,6 +146,7 @@ async function run() {
     let diff_add = projectID_list.concat(union_list).filter(v => !projectID_list.includes(v) || !union_list.includes(v));
     console.log("删除差集中的item");
     console.log(diff_del);
+    console.log(diff_del.length !== 0 && flag);
     if(diff_del.length !== 0 && flag){
         for(const pid of diff_del){
         const del_item_id = m1.get(pid);
@@ -167,6 +168,7 @@ async function run() {
       }
     }
     console.log("插入item");
+    console.log(diff_add.length === 1 && flag);
     if(diff_add.length === 1 && flag) {
       console.log("只有4,不需要添加");
       return ;
