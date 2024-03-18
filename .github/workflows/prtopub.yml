@@ -28,7 +28,7 @@ jobs:
 
   test:
     name: test CI
-    uses: lcxznpy-test/prtopub/.github/workflows/test.yaml@main
+    uses: lcxznpy-test/prtopub/.github/workflows/test.yml@main
     # secrets:
     #   TOKEN_ACTION: ${{ secrets.TOKEN_ACTION }}
     #   S3ENDPOINT: ${{ secrets.S3ENDPOINT }}
