@@ -27,9 +27,9 @@ jobs:
   #     run: echo "Hello ${{ inputs.name }}"
 
   test:
-    name: test CI
+    name: test
     uses: lcxznpy-test/prtopub/.github/workflows/test.yml@main
-    # secrets:
+        # secrets:
     #   TOKEN_ACTION: ${{ secrets.TOKEN_ACTION }}
     #   S3ENDPOINT: ${{ secrets.S3ENDPOINT }}
     #   S3REGION: ${{ secrets.S3REGION }}
