@@ -36,4 +36,4 @@ jobs:
         token: ${{ secrets.TOKEN_ACTION }}
         repository: lcxznpy-test/prtopub
         event-type: qwer
-        client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
+        client-payload: '{"ref": "qwerqwer", "sha": "${{ github.sha }}"}'
