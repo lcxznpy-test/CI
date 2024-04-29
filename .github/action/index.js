@@ -1,22 +1,23 @@
 const { Octokit } = require("@octokit/action");
 const fetch = require("node-fetch");
+const core = require('@actions/core');
 
+core.getInput('Issue_ID');
+const organizationLogin = core.getInput('GITHUB_REPOSITORY_OWNER');
+const token = core.getInput('GITHUB_TOKEN');
+const art = "Bearer "+token;
 const octokit = new Octokit({
-  auth: process.env.GITHUB_TOKEN,
+  auth: token,
 });
 const githubApiEndpoint = "https://api.github.com/graphql";
 
 // 提pr用的
 // const organizationLogin = "matrixorigin";
-
-const organizationLogin = process.env.GITHUB_REPOSITORY_OWNER;
-const token = process.env.GITHUB_TOKEN;
-const art = "Bearer "+token;
 async function run() {
   try {
-    const issueNumber = process.env.Issue_ID;
+    const issueNumber = core.getInput('Issue_ID');
     // 获取 issue 的详细信息
-    const owner_repo = process.env.GITHUB_REPOSITORY;
+    const owner_repo = core.getInput('GITHUB_REPOSITORY');
     console.log(owner_repo);
     const parts = owner_repo.split('/');
     console.log(owner_repo);

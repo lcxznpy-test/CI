@@ -9,7 +9,14 @@ inputs:
     description: "Issue ID"
     required: true
     default: ""
-
+  GITHUB_REPOSITORY_OWNER:
+    description: "github-repo-owner"
+    required: true
+    default: ""
+  GITHUB_REPOSITORY:
+    description: "github-repo"
+    required: true
+    default: ""
 runs:
   using: "node20"
-  main: "index.js"
+  main: "dist/index.js"
