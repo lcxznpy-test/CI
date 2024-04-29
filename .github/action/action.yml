@@ -1,0 +1,15 @@
+name: "assign-issue"
+description: "assign-issue"
+inputs:
+  GITHUB_TOKEN:
+    description: "GitHub Token"
+    required: true
+    default: ""
+  Issue_ID:
+    description: "Issue ID"
+    required: true
+    default: ""
+
+runs:
+  using: "node20"
+  main: "index.js"
